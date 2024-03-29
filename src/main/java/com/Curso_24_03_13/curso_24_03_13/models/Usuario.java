@@ -1,9 +1,6 @@
 package com.Curso_24_03_13.curso_24_03_13.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +10,7 @@ public class Usuario {
 
     @Getter @Setter @Column(name= "id")
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Getter @Setter @Column(name= "nombre")
