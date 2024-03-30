@@ -31,5 +31,8 @@ async function registrarUsuario(){
     //llama a la funcion stringify que agarra cualquier objeto de JS y  convertirlo a un String de json
 
   });
+
+  alert("La cuenta fue creada con exito");
+  window.location.href='login.html'
 }
 
