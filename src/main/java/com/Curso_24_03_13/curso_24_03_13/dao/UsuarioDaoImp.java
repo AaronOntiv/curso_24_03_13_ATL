@@ -43,7 +43,7 @@ public class UsuarioDaoImp implements UsuarioDao {
     }
 
     @Override
-    public boolean verificarCredenciales(Usuario usuario){
+    public Usuario obtenerUsuarioporCredenciales(Usuario usuario){
         String query="FROM Usuario WHERE email= :email ";
         //Esto evita la inyeccion SQL
         List<Usuario> lista=entityManager.createQuery(query)
@@ -51,13 +51,15 @@ public class UsuarioDaoImp implements UsuarioDao {
                 .getResultList();
 
         if(lista.isEmpty()){
-            return false;
+            return null;
         }
         String passwordHashed= lista.get(0).getPassword();
 
         Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-        boolean laPasswordEsLaMisma= argon2.verify(passwordHashed, usuario.getPassword());
-        return laPasswordEsLaMisma;
+        if( argon2.verify(passwordHashed, usuario.getPassword())) {
+            return lista.get(0);
+        }
+        return null;
     }
 
 

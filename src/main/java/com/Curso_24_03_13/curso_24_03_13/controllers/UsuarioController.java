@@ -2,6 +2,7 @@ package com.Curso_24_03_13.curso_24_03_13.controllers;
 
 import com.Curso_24_03_13.curso_24_03_13.dao.UsuarioDao;
 import com.Curso_24_03_13.curso_24_03_13.models.Usuario;
+import com.Curso_24_03_13.curso_24_03_13.utils.JWTUtil;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,8 @@ public class UsuarioController {
     private UsuarioDao usuarioDao;
     //Esto es inyeccion de dependencias, ese objeto va a guardaarse en memoria, en cualquier parte del programa
 
-
+    @Autowired
+    private JWTUtil jwtUtil;
 
     /*Por defecto cuando no tiene nada
     * esto esta como;   @RequestMapping(value = "api/usuarios/{id}",method=RequestMethod.GET) */
@@ -45,12 +47,21 @@ public class UsuarioController {
 
 
     @RequestMapping(value = "api/usuarios")
-    public List<Usuario> getUsuarios(){
+    public List<Usuario> getUsuarios(@RequestHeader(value="Authorization")String token){
+
+        if(!validarToken(token)){return null;}
         return  usuarioDao.getUsuarios();
+    }
+
+
+    private boolean validarToken(String token){
+        String usuarioId = jwtUtil.getKey(token);
+        return usuarioId!=null;
 
 
 
     }
+
 
     @RequestMapping(value="api/usuarios",method=RequestMethod.POST)
     public void reqistrarUsuario(@RequestBody Usuario usuario){
@@ -86,7 +97,9 @@ public class UsuarioController {
     * Lo que nos dice la notacion de requestMapping es que si entramos por la URL:api/usuarios y por el
     * metodo DELETE nos mandara a esta funcion.*/
     @RequestMapping(value="api/usuarios/{id}", method = RequestMethod.DELETE)
-    public void eliminar(@PathVariable long id){
+    public void eliminar(@RequestHeader(value="Authorization")String token, @PathVariable long id){
+
+        if(!validarToken(token)){return;}
         usuarioDao.eliminar(id);
 
     }

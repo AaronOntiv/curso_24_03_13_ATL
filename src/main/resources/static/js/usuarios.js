@@ -14,17 +14,14 @@ async function cargarUsuarios(){
   //Se debe indicar a la funcion que es asincronica por eso se pone async en cargar usuarios.
   const request = await fetch('api/usuarios', {
     method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getHeaders()
   });
   const usuarios = await request.json();
 
-  console.log(usuarios);
+  //console.log(usuarios);
 
 
-  let listadoHtml;
+  let listadoHtml='';
   for(let usuario of usuarios){
     let botonEliminar ='<a href="#" onclick="eliminarUsuario('+ usuario.id +')" class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash"></i></a>';
 
@@ -41,6 +38,16 @@ async function cargarUsuarios(){
 
 }
 
+
+function getHeaders(){
+    return{
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization':localStorage.token
+    };
+}
+
+
 async function eliminarUsuario(id){
   if(!confirm('¿Desea eliminar este usuario?')){
     return;
@@ -48,10 +55,7 @@ async function eliminarUsuario(id){
 
     const request = await fetch('api/usuarios/'+id, {
         method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
+        headers: getHeaders()
       });
 
 
